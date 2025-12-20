@@ -9,7 +9,9 @@ const userRoutes = require("./routes/user.routes");
 const adminRoutes = require("./routes/admin.routes");
 
 const app = express();
-connectMongo();
+if (require.main === module) {
+  connectMongo();
+}
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use(cors({ origin: config.app.corsOrigins, credentials: true }));
 app.use(express.json());
@@ -21,8 +23,10 @@ app.get("/status", (req, res) => {
 app.use("/api/user", userRoutes);
 app.use("/api/admin", adminRoutes);
 
-app.listen(config.app.port, () => {
-  console.log(`Server is running on port ${config.app.port}`);
-});
+if (require.main === module) {
+  app.listen(config.app.port, () => {
+    console.log(`Server is running on port ${config.app.port}`);
+  });
+}
 
 module.exports = app;

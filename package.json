@@ -10,7 +10,7 @@
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
     "format": "prettier --write .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha --timeout 10000 \"src/test/**/*.test.js\""
   },
   "repository": {
     "type": "git",
@@ -33,7 +33,11 @@
     "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
+    "chai": "^6.2.1",
+    "mocha": "^11.7.5",
+    "mongodb-memory-server": "^11.0.0",
     "nodemon": "^3.1.11",
-    "prettier": "^3.7.4"
+    "prettier": "^3.7.4",
+    "supertest": "^7.1.4"
   }
 }
