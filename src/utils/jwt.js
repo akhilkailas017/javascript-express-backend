@@ -19,18 +19,18 @@ function generateUserRefreshToken(user) {
     },
   );
 }
-function generateAdminAccessToken(admin) {
+function generateAdminAccessToken(email) {
   return jwt.sign(
-    { username: admin.username, role: "Admin" },
+    { email: email, role: "Admin" },
     config.admin.accessTokenSecret,
     {
       expiresIn: "15m",
     },
   );
 }
-function generateAdminRefreshToken(admin) {
+function generateAdminRefreshToken(email) {
   return jwt.sign(
-    { username: admin.username, role: "Admin" },
+    { email: email, role: "Admin" },
     config.admin.refreshTokenSecret,
     {
       expiresIn: "7d",

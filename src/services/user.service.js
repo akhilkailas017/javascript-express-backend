@@ -48,8 +48,13 @@ async function userRefreshToken(token) {
   };
 }
 
+async function getAllUsers(filters) {
+  return userRepository.getAllUsers(filters);
+}
+
 module.exports = {
   createUser,
   loginUser,
   userRefreshToken,
+  getAllUsers,
 };

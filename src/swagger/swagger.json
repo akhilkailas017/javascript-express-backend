@@ -21,10 +21,10 @@
     }
   },
   "paths": {
-    "/admin/login": {
+    "/api/admin/login": {
       "post": {
         "summary": "Admin Login",
-        "tags": ["Admin"],
+        "tags": ["Admin Auth"],
         "requestBody": {
           "required": true,
           "content": {
@@ -32,8 +32,8 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "username": { "type": "string" },
-                  "password": { "type": "string" }
+                  "email": { "type": "string", "example": "admin@gmail.com" },
+                  "password": { "type": "string", "example": "admin" }
                 }
               }
             }
@@ -45,10 +45,10 @@
       }
     },
 
-    "/admin/refresh-token": {
+    "/api/admin/refresh-token": {
       "post": {
         "summary": "Admin Refresh Token",
-        "tags": ["Admin"],
+        "tags": ["Admin Auth"],
         "requestBody": {
           "required": true,
           "content": {
@@ -68,7 +68,7 @@
       }
     },
 
-    "/admin/users": {
+    "/api/admin/users": {
       "get": {
         "summary": "List Users (Admin)",
         "tags": ["Admin"],
@@ -77,34 +77,59 @@
           {
             "in": "query",
             "name": "page",
-            "schema": { "type": "integer", "default": 1 }
+            "schema": { "type": "integer", "minimum": 1, "default": 1 }
           },
           {
             "in": "query",
             "name": "limit",
-            "schema": { "type": "integer", "default": 10 }
-          },
-          {
-            "in": "query",
-            "name": "username",
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 10
+            }
           },
           {
             "in": "query",
             "name": "name",
-            "schema": { "type": "string" }
+            "schema": { "type": "string" },
+            "description": "Partial match, case-insensitive"
           },
           {
             "in": "query",
             "name": "email",
-            "schema": { "type": "string" }
+            "schema": { "type": "string", "format": "email" }
           },
           {
             "in": "query",
-            "name": "id",
-            "schema": { "type": "string" }
+            "name": "minAge",
+            "schema": { "type": "integer", "minimum": 0 }
+          },
+          {
+            "in": "query",
+            "name": "maxAge",
+            "schema": { "type": "integer", "minimum": 0 }
+          },
+          {
+            "in": "query",
+            "name": "sortBy",
+            "schema": {
+              "type": "string",
+              "enum": ["createdAt", "name", "age", "email"],
+              "default": "createdAt"
+            }
+          },
+          {
+            "in": "query",
+            "name": "order",
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"],
+              "default": "desc"
+            }
           }
         ],
+
         "responses": {
           "200": {
             "description": "List of users"
@@ -116,7 +141,7 @@
     "/api/user/register": {
       "post": {
         "summary": "User Registration",
-        "tags": ["User"],
+        "tags": ["User Auth"],
         "requestBody": {
           "required": true,
           "content": {
@@ -142,7 +167,7 @@
     "/api/user/login": {
       "post": {
         "summary": "User Login",
-        "tags": ["User"],
+        "tags": ["User Auth"],
         "requestBody": {
           "required": true,
           "content": {
@@ -166,7 +191,7 @@
     "/api/user/refresh-token": {
       "post": {
         "summary": "User Refresh Token",
-        "tags": ["User"],
+        "tags": ["User Auth"],
         "requestBody": {
           "required": true,
           "content": {

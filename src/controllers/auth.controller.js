@@ -1,4 +1,5 @@
 const userService = require("../services/user.service");
+const adminService = require("../services/admin.service");
 
 async function registerUser(req, res) {
   try {
@@ -44,8 +45,39 @@ async function userRefreshToken(req, res) {
   }
 }
 
+async function loginAdmin(req, res) {
+  try {
+    const { email, password } = req.body;
+    if (!email || !password) {
+      return res.status(400).json({ error: "Email and password are required" });
+    }
+    const result = await adminService.loginAdmin(email, password);
+    if (result.error) {
+      return res.status(400).json({ error: result.error });
+    }
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+}
+
+async function adminRefreshToken(req, res) {
+  const { token } = req.body;
+  if (!token) {
+    return res.status(400).json({ error: "Refresh token is required" });
+  }
+  try {
+    const newTokens = await adminService.adminRefreshToken(token);
+    res.status(200).json(newTokens);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+}
+
 module.exports = {
   registerUser,
   loginUser,
   userRefreshToken,
+  loginAdmin,
+  adminRefreshToken,
 };

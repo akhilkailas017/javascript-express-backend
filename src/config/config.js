@@ -14,7 +14,7 @@ const config = {
   },
 
   admin: {
-    username: process.env.ADMIN_USERNAME || "admin",
+    email: process.env.ADMIN_EMAIL || "admin@gmail.com",
     passwordHash:
       process.env.ADMIN_PASSWORD_HASH ||
       "$2a$10$2JWO3zQpgyBCWDBt6tcGN.pt0TUE15N9siDw.5j9ScJGfIs49J.5.",
