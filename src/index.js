@@ -1,0 +1,24 @@
+const express = require('express');
+require('dotenv').config({ quiet: true });
+const config = require('./config/config');
+const cors = require('cors');
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('./swagger/swagger.json');
+const { connectMongo } = require('./datasource/mongo.datasource');
+
+const app = express();
+connectMongo();
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.use(cors({ origin: config.app.corsOrigins, credentials: true }));
+app.use(express.json());
+
+app.get('/', (req, res) => {
+  res.send('Welcome to the Express.js Backend!');
+});
+
+
+app.listen(config.app.port, () => {
+  console.log(`Server is running on port ${config.app.port}`);
+});
+
+module.exports = app;
