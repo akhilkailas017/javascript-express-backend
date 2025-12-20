@@ -10,7 +10,9 @@
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
     "format": "prettier --write .",
-    "test": "mocha --timeout 10000 \"src/test/**/*.test.js\""
+    "test": "mocha --timeout 10000 \"src/test/**/*.test.js\"",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "repository": {
     "type": "git",
@@ -33,7 +35,9 @@
     "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.2",
     "chai": "^6.2.1",
+    "eslint": "^9.39.2",
     "mocha": "^11.7.5",
     "mongodb-memory-server": "^11.0.0",
     "nodemon": "^3.1.11",

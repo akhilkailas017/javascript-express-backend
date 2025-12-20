@@ -13,7 +13,7 @@ function adminAuthMiddleware(req, res, next) {
     req.admin = decoded;
     next();
   } catch (error) {
-    res.status(401).json({ message: "Invalid token" });
+    res.status(401).json({ message: "Invalid token", error: error });
   }
 }
 
