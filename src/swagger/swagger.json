@@ -219,6 +219,32 @@
           "200": { "description": "Status information" }
         }
       }
+    },
+
+    "/api/user/item": {
+      "post": {
+        "summary": "Item Creation",
+        "tags": ["Item"],
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string", "example": "ak" },
+                  "description": { "type": "string", "example": "abcd" },
+                  "price": { "type": "integer", "example": 24 }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "item created successfully" }
+        }
+      }
     }
   }
 }
