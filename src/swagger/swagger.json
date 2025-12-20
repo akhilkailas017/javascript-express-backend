@@ -139,7 +139,7 @@
       }
     },
 
-    "/user/login": {
+    "/api/user/login": {
       "post": {
         "summary": "User Login",
         "tags": ["User"],
@@ -150,8 +150,8 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "username": { "type": "string" },
-                  "password": { "type": "string" }
+                  "email": { "type": "string", "example": "ak@gmail.com" },
+                  "password": { "type": "string", "example": "123" }
                 }
               }
             }
@@ -163,7 +163,7 @@
       }
     },
 
-    "/user/refresh-token": {
+    "/api/user/refresh-token": {
       "post": {
         "summary": "User Refresh Token",
         "tags": ["User"],
