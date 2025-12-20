@@ -5,6 +5,7 @@ const cors = require('cors');
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./swagger/swagger.json');
 const { connectMongo } = require('./datasource/mongo.datasource');
+const userRoutes = require('./routes/user.routes');
 
 const app = express();
 connectMongo();
@@ -16,6 +17,7 @@ app.get('/', (req, res) => {
   res.send('Welcome to the Express.js Backend!');
 });
 
+app.use('/api/user', userRoutes);
 
 app.listen(config.app.port, () => {
   console.log(`Server is running on port ${config.app.port}`);

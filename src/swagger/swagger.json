@@ -113,7 +113,7 @@
       }
     },
 
-    "/user/register": {
+    "/api/user/register": {
       "post": {
         "summary": "User Registration",
         "tags": ["User"],
@@ -121,7 +121,15 @@
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "type": "object" }
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string", "example": "ak" },
+                  "email": { "type": "string", "example": "ak@gmail.com" },
+                    "age": { "type": "integer", "example": 24 },
+                    "password": { "type": "string", "example": "123" }
+                }
+              }
             }
           }
         },
