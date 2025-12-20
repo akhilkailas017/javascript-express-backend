@@ -10,6 +10,11 @@ async function createItem(name, description, price, id) {
   return user;
 }
 
+async function getItem(filters, userId) {
+  return itemRepository.getItemsByCreator(userId, filters);
+}
+
 module.exports = {
   createItem,
+  getItem,
 };

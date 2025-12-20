@@ -15,7 +15,7 @@ app.use(cors({ origin: config.app.corsOrigins, credentials: true }));
 app.use(express.json());
 
 app.get("/status", (req, res) => {
-  res.send("Welcome to the Express.js Backend!");
+  res.send("ok");
 });
 
 app.use("/api/user", userRoutes);

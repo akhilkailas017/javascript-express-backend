@@ -20,6 +20,18 @@ async function createItem(req, res) {
   }
 }
 
+async function getItem(req, res) {
+  try {
+    const items = await itemService.getItem(req.query, req.user.id);
+    return res.status(200).json({ data: items });
+  } catch (err) {
+    return res.status(err.status || 500).json({
+      error: err.message || "Failed to fetch users",
+    });
+  }
+}
+
 module.exports = {
   createItem,
+  getItem,
 };
