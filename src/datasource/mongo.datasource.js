@@ -1,21 +1,21 @@
-const mongoose = require('mongoose');
-const config = require('../config/config');
+const mongoose = require("mongoose");
+const config = require("../config/config");
 
 async function connectMongo() {
   try {
-    mongoose.set('strictQuery', true);
+    mongoose.set("strictQuery", true);
 
     await mongoose.connect(config.db.mongoUrl, {
-      autoIndex: false
+      autoIndex: false,
     });
 
-    console.log('MongoDB connected');
+    console.log("MongoDB connected");
   } catch (err) {
-    console.error('MongoDB connection failed:', err.message);
+    console.error("MongoDB connection failed:", err.message);
     process.exit(1);
   }
 }
 
 module.exports = {
-  connectMongo
+  connectMongo,
 };

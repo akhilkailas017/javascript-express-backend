@@ -1,6 +1,10 @@
 const bcrypt = require("bcrypt");
 const userRepository = require("../repositories/user.repository");
-const { generateUserRefreshToken, generateUserAccessToken, verifyUserRefreshToken } = require("../utils/jwt");
+const {
+  generateUserRefreshToken,
+  generateUserAccessToken,
+  verifyUserRefreshToken,
+} = require("../utils/jwt");
 
 async function createUser(name, email, age, password) {
   const existingUser = await userRepository.findUserByEmail(email);
@@ -26,19 +30,22 @@ async function loginUser(email, password) {
   if (!isPasswordValid) {
     return { error: "Invalid password" };
   }
-  return { accessToken: generateUserAccessToken(user), refreshToken: generateUserRefreshToken(user) };
+  return {
+    accessToken: generateUserAccessToken(user),
+    refreshToken: generateUserRefreshToken(user),
+  };
 }
 
 async function userRefreshToken(token) {
   const decoded = verifyUserRefreshToken(token);
   const user = await userRepository.findUserById(decoded.id);
-    if (!user) {
-        throw new Error("User not found");
-    }
-    return {
-        accessToken: generateUserAccessToken(user),
-        refreshToken: generateUserRefreshToken(user),
-    };
+  if (!user) {
+    throw new Error("User not found");
+  }
+  return {
+    accessToken: generateUserAccessToken(user),
+    refreshToken: generateUserRefreshToken(user),
+  };
 }
 
 module.exports = {

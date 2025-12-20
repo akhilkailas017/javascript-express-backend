@@ -1,35 +1,35 @@
-require('dotenv').config({ quiet: true });
+require("dotenv").config({ quiet: true });
 
 const config = {
   app: {
-    nodeEnv: process.env.NODE_ENV || 'development',
+    nodeEnv: process.env.NODE_ENV || "development",
     port: process.env.PORT || 5000,
     corsOrigins: process.env.CORS_ORIGINS
-      ? process.env.CORS_ORIGINS.split(',')
-      : ['http://localhost:3000', 'http://localhost:3001']
+      ? process.env.CORS_ORIGINS.split(",")
+      : ["http://localhost:3000", "http://localhost:3001"],
   },
 
   db: {
-    mongoUrl: process.env.MONGO_URL || 'mongodb://localhost:27017/mydb'
+    mongoUrl: process.env.MONGO_URL || "mongodb://localhost:27017/mydb",
   },
 
   admin: {
-    username: process.env.ADMIN_USERNAME || 'admin',
+    username: process.env.ADMIN_USERNAME || "admin",
     passwordHash:
       process.env.ADMIN_PASSWORD_HASH ||
-      '$2a$10$2JWO3zQpgyBCWDBt6tcGN.pt0TUE15N9siDw.5j9ScJGfIs49J.5.',
+      "$2a$10$2JWO3zQpgyBCWDBt6tcGN.pt0TUE15N9siDw.5j9ScJGfIs49J.5.",
     accessTokenSecret:
-      process.env.ADMIN_ACCESS_TOKEN_SECRET || 'default_admin_access_secret',
+      process.env.ADMIN_ACCESS_TOKEN_SECRET || "default_admin_access_secret",
     refreshTokenSecret:
-      process.env.ADMIN_REFRESH_TOKEN_SECRET || 'default_admin_refresh_secret'
+      process.env.ADMIN_REFRESH_TOKEN_SECRET || "default_admin_refresh_secret",
   },
 
   user: {
     accessTokenSecret:
-      process.env.USER_ACCESS_TOKEN_SECRET || 'default_user_access_secret',
+      process.env.USER_ACCESS_TOKEN_SECRET || "default_user_access_secret",
     refreshTokenSecret:
-      process.env.USER_REFRESH_TOKEN_SECRET || 'default_user_refresh_secret'
-  }
+      process.env.USER_REFRESH_TOKEN_SECRET || "default_user_refresh_secret",
+  },
 };
 
 module.exports = config;

@@ -1,23 +1,23 @@
-const express = require('express');
-require('dotenv').config({ quiet: true });
-const config = require('./config/config');
-const cors = require('cors');
-const swaggerUi = require('swagger-ui-express');
-const swaggerDocument = require('./swagger/swagger.json');
-const { connectMongo } = require('./datasource/mongo.datasource');
-const userRoutes = require('./routes/user.routes');
+const express = require("express");
+require("dotenv").config({ quiet: true });
+const config = require("./config/config");
+const cors = require("cors");
+const swaggerUi = require("swagger-ui-express");
+const swaggerDocument = require("./swagger/swagger.json");
+const { connectMongo } = require("./datasource/mongo.datasource");
+const userRoutes = require("./routes/user.routes");
 
 const app = express();
 connectMongo();
-app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use(cors({ origin: config.app.corsOrigins, credentials: true }));
 app.use(express.json());
 
-app.get('/', (req, res) => {
-  res.send('Welcome to the Express.js Backend!');
+app.get("/", (req, res) => {
+  res.send("Welcome to the Express.js Backend!");
 });
 
-app.use('/api/user', userRoutes);
+app.use("/api/user", userRoutes);
 
 app.listen(config.app.port, () => {
   console.log(`Server is running on port ${config.app.port}`);

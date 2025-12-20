@@ -7,7 +7,7 @@ function generateUserAccessToken(user) {
     config.user.accessTokenSecret,
     {
       expiresIn: "15m",
-    }
+    },
   );
 }
 function generateUserRefreshToken(user) {
@@ -16,7 +16,7 @@ function generateUserRefreshToken(user) {
     config.user.refreshTokenSecret,
     {
       expiresIn: "7d",
-    }
+    },
   );
 }
 function generateAdminAccessToken(admin) {
@@ -25,7 +25,7 @@ function generateAdminAccessToken(admin) {
     config.admin.accessTokenSecret,
     {
       expiresIn: "15m",
-    }
+    },
   );
 }
 function generateAdminRefreshToken(admin) {
@@ -34,7 +34,7 @@ function generateAdminRefreshToken(admin) {
     config.admin.refreshTokenSecret,
     {
       expiresIn: "7d",
-    }
+    },
   );
 }
 

@@ -126,8 +126,8 @@
                 "properties": {
                   "name": { "type": "string", "example": "ak" },
                   "email": { "type": "string", "example": "ak@gmail.com" },
-                    "age": { "type": "integer", "example": 24 },
-                    "password": { "type": "string", "example": "123" }
+                  "age": { "type": "integer", "example": 24 },
+                  "password": { "type": "string", "example": "123" }
                 }
               }
             }
