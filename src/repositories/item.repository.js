@@ -10,6 +10,59 @@ async function findItemById(itemId) {
   return Item.findById(itemId).lean();
 }
 
+async function updateItemPatch(itemId, data) {
+  if (!mongoose.Types.ObjectId.isValid(itemId)) return null;
+  return Item.findByIdAndUpdate(itemId, data, { new: true }).lean();
+}
+
+async function updateItemPut(itemId, data) {
+  if (!mongoose.Types.ObjectId.isValid(itemId)) return null;
+  return Item.findOneAndReplace({ _id: itemId }, data, {
+    new: true,
+    runValidators: true,
+  }).lean();
+}
+
+async function deleteItem(itemId) {
+  if (!mongoose.Types.ObjectId.isValid(itemId)) return null;
+  return Item.findByIdAndDelete(itemId).lean();
+}
+
+async function getItemsByCreator(userId, filters = {}) {
+  if (!mongoose.Types.ObjectId.isValid(userId)) return [];
+
+  const {
+    name,
+    minPrice,
+    maxPrice,
+    page = 1,
+    limit = 10,
+    sortBy = "createdAt",
+    order = "desc",
+  } = filters;
+
+  const query = { createdBy: userId };
+
+  if (name) {
+    query.name = { $regex: name, $options: "i" };
+  }
+
+  if (minPrice || maxPrice) {
+    query.price = {};
+    if (minPrice) query.price.$gte = Number(minPrice);
+    if (maxPrice) query.price.$lte = Number(maxPrice);
+  }
+
+  const skip = (Number(page) - 1) * Number(limit);
+  const sortOrder = order === "asc" ? 1 : -1;
+
+  return Item.find(query)
+    .sort({ [sortBy]: sortOrder })
+    .skip(skip)
+    .limit(Number(limit))
+    .lean();
+}
+
 async function getAllItems(filters = {}) {
   const {
     name,
@@ -54,56 +107,12 @@ async function getAllItems(filters = {}) {
     .lean();
 }
 
-async function updateItem(itemId, data) {
-  if (!mongoose.Types.ObjectId.isValid(itemId)) return null;
-  return Item.findByIdAndUpdate(itemId, data, { new: true }).lean();
-}
-
-async function deleteItem(itemId) {
-  if (!mongoose.Types.ObjectId.isValid(itemId)) return null;
-  return Item.findByIdAndDelete(itemId).lean();
-}
-
-async function getItemsByCreator(userId, filters = {}) {
-  if (!mongoose.Types.ObjectId.isValid(userId)) return [];
-
-  const {
-    name,
-    minPrice,
-    maxPrice,
-    page = 1,
-    limit = 10,
-    sortBy = "createdAt",
-    order = "desc",
-  } = filters;
-
-  const query = { createdBy: userId };
-
-  if (name) {
-    query.name = { $regex: name, $options: "i" };
-  }
-
-  if (minPrice || maxPrice) {
-    query.price = {};
-    if (minPrice) query.price.$gte = Number(minPrice);
-    if (maxPrice) query.price.$lte = Number(maxPrice);
-  }
-
-  const skip = (Number(page) - 1) * Number(limit);
-  const sortOrder = order === "asc" ? 1 : -1;
-
-  return Item.find(query)
-    .sort({ [sortBy]: sortOrder })
-    .skip(skip)
-    .limit(Number(limit))
-    .lean();
-}
-
 module.exports = {
   createItem,
   findItemById,
-  getAllItems,
-  updateItem,
+  updateItemPatch,
+  updateItemPut,
   deleteItem,
   getItemsByCreator,
+  getAllItems,
 };
