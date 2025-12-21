@@ -8,7 +8,7 @@ const {
   closeDatabase,
 } = require("./setup/mongoMemory");
 
-describe("admin auth", function () {
+describe("admin login", function () {
   before(async function () {
     await connect();
   });
