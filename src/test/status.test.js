@@ -8,7 +8,7 @@ const {
   closeDatabase,
 } = require("./setup/mongoMemory");
 
-describe("GET /status", function () {
+describe("status", function () {
   before(async function () {
     await connect();
   });

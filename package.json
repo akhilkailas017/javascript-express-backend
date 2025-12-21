@@ -1,7 +1,7 @@
 {
   "name": "javascript-express-backend",
   "version": "1.0.0",
-  "description": "simple javascript-express-backend template with admin panel and user authentication",
+  "description": "javascript-express-backend",
   "main": "src/index.js",
   "engines": {
     "node": ">=18 <23"
