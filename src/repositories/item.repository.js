@@ -1,80 +1,122 @@
-const Item = require("../models/item.model");
-const mongoose = require("mongoose");
+"use strict";
 
-async function createItem(data) {
-  return Item.create(data);
+const mongoose = require("mongoose");
+const Item = require("../models/item.model");
+
+const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
+
+const toNumber = (value, defaultValue) => {
+  const num = Number(value);
+  return Number.isNaN(num) ? defaultValue : num;
+};
+
+const buildPriceQuery = (minPrice, maxPrice) => {
+  if (minPrice == null && maxPrice == null) return undefined;
+
+  const priceQuery = {};
+  if (minPrice != null) priceQuery.$gte = toNumber(minPrice);
+  if (maxPrice != null) priceQuery.$lte = toNumber(maxPrice);
+
+  return priceQuery;
+};
+
+const buildPagination = ({ page = 1, limit = 10 }) => {
+  const safeLimit = Math.min(toNumber(limit, 10), 100);
+  const safePage = Math.max(toNumber(page, 1), 1);
+
+  return {
+    limit: safeLimit,
+    skip: (safePage - 1) * safeLimit,
+    page: safePage,
+  };
+};
+
+const buildSort = ({ sortBy = "createdAt", order = "desc" }) => ({
+  [sortBy]: order === "asc" ? 1 : -1,
+});
+
+async function createItem(data, options = {}) {
+  return Item.create([data], options).then((res) => res[0]);
 }
 
 async function findItemById(itemId) {
-  if (!mongoose.Types.ObjectId.isValid(itemId)) return null;
-  return Item.findById(itemId).lean();
+  if (!isValidObjectId(itemId)) return null;
+
+  return Item.findById(itemId).lean({ virtuals: true });
 }
 
-async function updateItemPatch(itemId, data) {
-  if (!mongoose.Types.ObjectId.isValid(itemId)) return null;
-  return Item.findByIdAndUpdate(itemId, data, { new: true }).lean();
+async function updateItemPatch(itemId, data, options = {}) {
+  if (!isValidObjectId(itemId)) return null;
+
+  return Item.findByIdAndUpdate(
+    itemId,
+    { $set: data },
+    {
+      new: true,
+      runValidators: true,
+      ...options,
+    },
+  ).lean();
 }
 
-async function updateItemPut(itemId, data) {
-  if (!mongoose.Types.ObjectId.isValid(itemId)) return null;
+async function updateItemPut(itemId, data, options = {}) {
+  if (!isValidObjectId(itemId)) return null;
+
   return Item.findOneAndReplace({ _id: itemId }, data, {
     new: true,
     runValidators: true,
+    overwrite: true,
+    ...options,
   }).lean();
 }
 
-async function deleteItem(itemId) {
-  if (!mongoose.Types.ObjectId.isValid(itemId)) return null;
-  return Item.findByIdAndDelete(itemId).lean();
+async function deleteItem(itemId, options = {}) {
+  if (!isValidObjectId(itemId)) return null;
+
+  return Item.findByIdAndDelete(itemId, options).lean();
 }
 
 async function getItemsByCreator(userId, filters = {}) {
-  if (!mongoose.Types.ObjectId.isValid(userId)) return [];
+  if (!isValidObjectId(userId)) {
+    return { data: [], total: 0 };
+  }
 
-  const {
-    name,
-    minPrice,
-    maxPrice,
-    page = 1,
-    limit = 10,
-    sortBy = "createdAt",
-    order = "desc",
-  } = filters;
+  const { name, minPrice, maxPrice } = filters;
 
-  const query = { createdBy: userId };
+  const { limit, skip, page } = buildPagination(filters);
+  const sort = buildSort(filters);
+
+  const query = {
+    createdBy: userId,
+  };
 
   if (name) {
     query.name = { $regex: name, $options: "i" };
   }
 
-  if (minPrice || maxPrice) {
-    query.price = {};
-    if (minPrice) query.price.$gte = Number(minPrice);
-    if (maxPrice) query.price.$lte = Number(maxPrice);
-  }
+  const priceQuery = buildPriceQuery(minPrice, maxPrice);
+  if (priceQuery) query.price = priceQuery;
 
-  const skip = (Number(page) - 1) * Number(limit);
-  const sortOrder = order === "asc" ? 1 : -1;
+  const [data, total] = await Promise.all([
+    Item.find(query).sort(sort).skip(skip).limit(limit).lean(),
+    Item.countDocuments(query),
+  ]);
 
-  return Item.find(query)
-    .sort({ [sortBy]: sortOrder })
-    .skip(skip)
-    .limit(Number(limit))
-    .lean();
+  return {
+    data,
+    meta: {
+      total,
+      page,
+      limit,
+    },
+  };
 }
 
 async function getAllItems(filters = {}) {
-  const {
-    name,
-    description,
-    minPrice,
-    maxPrice,
-    createdBy,
-    page = 1,
-    limit = 10,
-    sortBy = "createdAt",
-    order = "desc",
-  } = filters;
+  const { name, description, minPrice, maxPrice, createdBy } = filters;
+
+  const { limit, skip, page } = buildPagination(filters);
+  const sort = buildSort(filters);
 
   const query = {};
 
@@ -86,27 +128,32 @@ async function getAllItems(filters = {}) {
     query.description = { $regex: description, $options: "i" };
   }
 
-  if (minPrice || maxPrice) {
-    query.price = {};
-    if (minPrice) query.price.$gte = Number(minPrice);
-    if (maxPrice) query.price.$lte = Number(maxPrice);
-  }
+  const priceQuery = buildPriceQuery(minPrice, maxPrice);
+  if (priceQuery) query.price = priceQuery;
 
-  if (createdBy && mongoose.Types.ObjectId.isValid(createdBy)) {
+  if (createdBy && isValidObjectId(createdBy)) {
     query.createdBy = createdBy;
   }
 
-  const skip = (Number(page) - 1) * Number(limit);
-  const sortOrder = order === "asc" ? 1 : -1;
+  const [data, total] = await Promise.all([
+    Item.find(query)
+      .sort(sort)
+      .skip(skip)
+      .limit(limit)
+      .populate("createdBy", "name email")
+      .lean(),
+    Item.countDocuments(query),
+  ]);
 
-  return Item.find(query)
-    .sort({ [sortBy]: sortOrder })
-    .skip(skip)
-    .limit(Number(limit))
-    .populate("createdBy", "name email")
-    .lean();
+  return {
+    data,
+    meta: {
+      total,
+      page,
+      limit,
+    },
+  };
 }
-
 module.exports = {
   createItem,
   findItemById,
